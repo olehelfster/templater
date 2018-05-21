@@ -1,35 +1,61 @@
 function HtmlTagsBuilder() {
 
   this.tagsObj = {};
-
+  this.tagsObjKey = [];
+  this.tagsObjValue = '';
 }
 
 
 HtmlTagsBuilder.prototype.run = function () {
-
-  for(let customTag in this.tagsObj ){
-
-    const customTags = Array.from(document.querySelectorAll(customTag));
-
-    if(customTags.length){
-      customTags[0].outerHTML = this.tagsObj[customTag];
+  
+    if(this.tagsObjKey.length){
+      this.tagsObjKey[0].outerHTML = this.tagsObjValue;
     }else {
-      console.log(customTag + " " +  'no customTag in DOM');
+      console.log( 'no customTag in DOM');
     }
-  }
-
 };
 
 HtmlTagsBuilder.prototype.addTag = function (customTag, template) {
 
   this.tagsObj[customTag] = template;
 
+  this.render();
 };
 
+HtmlTagsBuilder.prototype.render = function () {
+
+  const reHtml = /({{[html]*}})/g,
+        reClass = /({{[class]*}})/g,
+        reType = /({{[type]*}})/g;
+
+  for(let i in this.tagsObj ){
+
+    this.tagsObjKey = Array.from(document.querySelectorAll(i));
+
+    this.tagsObjValue = this.tagsObj[i];
+
+    for(let j = 0; j < this.tagsObjKey.length; j++){
+      const htmlText = this.tagsObjKey[j].innerHTML;
+      const attrType = this.tagsObjKey[j].attributes.type.value;
+      const attrClass = this.tagsObjKey[j].attributes.class.value;
+
+      if( this.tagsObjValue.includes('{{html}}') && htmlText !== 'some text' ){
+        this.tagsObjValue = this.tagsObjValue.replace(reHtml, htmlText);
+      } else {
+        this.tagsObjValue = this.tagsObjValue.replace(reHtml, 'some text');
+      }
+
+      if( this.tagsObjValue.includes('{{class}}') ){
+        this.tagsObjValue = this.tagsObjValue.replace(reClass, attrClass);
+      }
+
+      if( this.tagsObjValue.includes('{{type}}') ) {
+        this.tagsObjValue = this.tagsObjValue.replace(reType, attrType);
+      }
+    }
+
+  }
+};
 
 const Templater = new HtmlTagsBuilder();
-
-// Templater.addTag('bootstrap_button', '<button class="btn btn-default" type="submit">' + "Some text" + "</button>");
-// Templater.addTag('bootstrap_link', '<a class="btn btn-default" href="#" role="button">' + "Some Another Text" + "</a>");
-// Templater.run();
 
