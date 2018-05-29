@@ -7,7 +7,30 @@
 <body>
 
 <bootstrap_button class="btn btn-default some-class" type="submit" >some text</bootstrap_button>
+<bootstrap_link class="btn btn-default some-class" type="submit" >some text</bootstrap_link>
 
 <script src="templater.js"></script>
+<script>
+  Templater.addTag(
+
+    'bootstrap_button',
+
+    '<button class="{{class}}" type="{{type}}">' + '{{html}}' + '</button>'
+
+  );
+  Templater.addTag(
+
+        'bootstrap_link',
+
+  '<a class="btn btn-default" href="#" role="button">' +
+
+        'Some Another Text' +
+
+        '</a>'
+
+  );
+
+  Templater.run();
+</script>
 </body>
 </html>

@@ -1,61 +1,66 @@
-function HtmlTagsBuilder() {
+const Templater = (function () {
 
-  this.tagsObj = {};
-  this.tagsObjKey = [];
-  this.tagsObjValue = '';
-}
+  const tags = {};
+  // const reHtml = /({{[html]*}})/g;
 
 
-HtmlTagsBuilder.prototype.run = function () {
-  
-    if(this.tagsObjKey.length){
-      this.tagsObjKey[0].outerHTML = this.tagsObjValue;
-    }else {
-      console.log( 'no customTag in DOM');
-    }
-};
+  // function getHtmlTag(obj) {
+  //   const htmlElement = [];
+  //
+  //   for(let key in obj){
+  //     htmlElement.push(Array.from(document.querySelectorAll( key )));
+  //   }
+  //   return htmlElement;
+  // }
 
-HtmlTagsBuilder.prototype.addTag = function (customTag, template) {
+  /*
+  Добавить метод (или функцию, как угодно,
+    главное чтобы этот функционал не находился внутри метода run,
+    так как это существенно усложнит его) render к объекту Templater,
+    который принимает два параметра и возвращает отрендеренный html:
+      template - сюда будут передаваться шаблоны, которые мы передавали в метод addTag
+      element - сюда будет передаваться объект кастомного элемента DOM (например bootstrap_button (не строка, а именно объект))
 
-  this.tagsObj[customTag] = template;
+  Переписать метод run таким образом, чтобы он рендерил шаблон (с помощью метода render)
+  */
+  function render( template, element ) {
 
-  this.render();
-};
+    console.log(typeof template);
+    console.log(typeof element);
 
-HtmlTagsBuilder.prototype.render = function () {
+    // console.log(keys + ' ' + values);
 
-  const reHtml = /({{[html]*}})/g,
-        reClass = /({{[class]*}})/g,
-        reType = /({{[type]*}})/g;
+    // const processedTemplate = template.map(function ( html) {
+    //   // console.log(html + element);
+    //   return console.log(element);
+    // })
 
-  for(let i in this.tagsObj ){
 
-    this.tagsObjKey = Array.from(document.querySelectorAll(i));
 
-    this.tagsObjValue = this.tagsObj[i];
+    // for(let i in template) {
+    //
+    //   console.log(i.toUpperCase());
+    //
+    //
+    // }
 
-    for(let j = 0; j < this.tagsObjKey.length; j++){
-      const htmlText = this.tagsObjKey[j].innerHTML;
-      const attrType = this.tagsObjKey[j].attributes.type.value;
-      const attrClass = this.tagsObjKey[j].attributes.class.value;
-
-      if( this.tagsObjValue.includes('{{html}}') && htmlText !== 'some text' ){
-        this.tagsObjValue = this.tagsObjValue.replace(reHtml, htmlText);
-      } else {
-        this.tagsObjValue = this.tagsObjValue.replace(reHtml, 'some text');
-      }
-
-      if( this.tagsObjValue.includes('{{class}}') ){
-        this.tagsObjValue = this.tagsObjValue.replace(reClass, attrClass);
-      }
-
-      if( this.tagsObjValue.includes('{{type}}') ) {
-        this.tagsObjValue = this.tagsObjValue.replace(reType, attrType);
-      }
-    }
+    // return processedTemplate;
 
   }
-};
 
-const Templater = new HtmlTagsBuilder();
+  return {
+    addTag: function (tag, template) {
+      tags[tag] = template;
+    },
+    run: function () {
+
+      const element = Array.from(document.querySelectorAll( Object.keys(tags) ));
+      const template = Object.values(tags);
+
+      render( template, element );
+    }
+  }
+
+}());
+
 
