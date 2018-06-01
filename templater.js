@@ -1,35 +1,33 @@
-function HtmlTagsBuilder() {
+const Templater = (function () {
 
-  this.tagsObj = {};
+  const tags = {};
+  const regexp = /{{(.*?)}}/g;
 
-}
-
-
-HtmlTagsBuilder.prototype.run = function () {
-
-  for(let customTag in this.tagsObj ){
-
-    const customTags = Array.from(document.querySelectorAll(customTag));
-
-    if(customTags.length){
-      customTags[0].outerHTML = this.tagsObj[customTag];
-    }else {
-      console.log(customTag + " " +  'no customTag in DOM');
+  function _render( template, element ) {
+    function precedeTemplate(match, attr) {
+      if( attr === 'html') {
+        return element.innerHTML;
+      } else {
+        return element.getAttribute(attr);
+      }
     }
+    return template.replace(regexp, precedeTemplate);
   }
 
-};
+  return {
+    addTag: function (tag, template) {
+      tags[tag] = template;
+    },
+    run: function () {
+      for( let tag in tags ){
 
-HtmlTagsBuilder.prototype.addTag = function (customTag, template) {
+        const elements = Array.from(document.getElementsByTagName( tag ));
+        elements.forEach( element => {
+          element.outerHTML = _render(tags[tag], element);
+        })
+      }
+    }
+  }
+}());
 
-  this.tagsObj[customTag] = template;
-
-};
-
-
-const Templater = new HtmlTagsBuilder();
-
-// Templater.addTag('bootstrap_button', '<button class="btn btn-default" type="submit">' + "Some text" + "</button>");
-// Templater.addTag('bootstrap_link', '<a class="btn btn-default" href="#" role="button">' + "Some Another Text" + "</a>");
-// Templater.run();
 
