@@ -1,28 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>Title</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
 </head>
 <body>
 
-<bootstrap_button class="btn btn-default some-class" type="submit" >Some Text</bootstrap_button>
+<section id="bootstrap-templates">
+    <button type="submit" class="some-class">
+        Bootstrap Button
+    </button>
+</section>
+<section id="foundation-templates">
+    <button type="submit" class="some-class">
+        Foundation Button
+    </button>
+</section>
 
 <script src="templater.js"></script>
 <script>
-  Templater.addTag(
+  $('#bootstrap-templates').templater({
+    tags: {
+      'button': '<button class="btn btn-default {{class}}" type="{{type}}">{{html}}</button>'
+    }
+  });
+  
+  $('#foundation-templates').templater({
+    tags: {
+      'button': '<button class="button {{class}}" type="{{type}}">{{html}}</button>'
+    }
 
-    'bootstrap_button',
-
-    '<button class="{{class}}" type="{{type}}">' +
-
-    '{{html}}' +
-
-    '</button>'
-
-  );
-
-  Templater.run();
+  });
 </script>
 </body>
 </html>

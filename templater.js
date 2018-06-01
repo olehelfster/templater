@@ -1,3 +1,10 @@
+(function ( $ ) {
+  $.fn.templater = function () {
+    const tags = {};
+    const regexp = /{{(.*?)}}/g;
+
+  };
+})( jQuery );
 const Templater = (function () {
 
   const tags = {};
@@ -24,10 +31,12 @@ const Templater = (function () {
         const elements = Array.from(document.getElementsByTagName( tag ));
         elements.forEach( element => {
           element.outerHTML = _render(tags[tag], element);
+
         })
       }
     }
   }
+
 }());
 
 
