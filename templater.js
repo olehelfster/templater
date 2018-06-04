@@ -1,42 +1,41 @@
-(function ( $ ) {
-  $.fn.templater = function () {
-    const tags = {};
-    const regexp = /{{(.*?)}}/g;
+(function ($) {
+  $.fn.templater = function (options) {
+    const tags = options.tags;
 
-  };
-})( jQuery );
-const Templater = (function () {
-
-  const tags = {};
-  const regexp = /{{(.*?)}}/g;
-
-  function _render( template, element ) {
-    function precedeTemplate(match, attr) {
-      if( attr === 'html') {
-        return element.innerHTML;
-      } else {
-        return element.getAttribute(attr);
-      }
+    if (!tags) {
+      return;
     }
-    return template.replace(regexp, precedeTemplate);
-  }
 
-  return {
-    addTag: function (tag, template) {
-      tags[tag] = template;
-    },
-    run: function () {
-      for( let tag in tags ){
+    const regexp = /{{(.*?)}}/g;
+    const $this = $(this);
 
-        const elements = Array.from(document.getElementsByTagName( tag ));
-        elements.forEach( element => {
+    function _render(template, element) {
+
+      const $element = $(element);
+
+      function precedeTemplate(match, attr) {
+        if (attr === 'html') {
+          if($element.html() === ""){
+            return $element.html('Some Text')[0].innerHTML
+          }
+          return $element.html();
+        } else {
+          return $element.attr(attr);
+        }
+      }
+      return template.replace(regexp, precedeTemplate);
+    }
+
+    return $this.each( () => {
+      for (let tag in tags) {
+        const elements = $this.children(tag)[0];
+        $(elements).each((i, element) => {
           element.outerHTML = _render(tags[tag], element);
-
         })
       }
-    }
-  }
+    });
+  };
+})(jQuery);
 
-}());
 
 
