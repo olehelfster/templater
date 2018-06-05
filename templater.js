@@ -12,7 +12,6 @@
     function _render(template, element) {
 
       const $element = $(element);
-
       function precedeTemplate(match, attr) {
         if (attr === 'html') {
           if($element.html() === ""){
@@ -23,16 +22,20 @@
           return $element.attr(attr);
         }
       }
+
       return template.replace(regexp, precedeTemplate);
     }
 
+    for (let tag in tags) {
+      const elements = $this.find(tag);
+      
+      $(elements).each((i, element) => {
+        element.outerHTML = _render(tags[tag], element);
+      });
+
+    }
     return $this.each( () => {
-      for (let tag in tags) {
-        const elements = $this.children(tag)[0];
-        $(elements).each((i, element) => {
-          element.outerHTML = _render(tags[tag], element);
-        })
-      }
+
     });
   };
 })(jQuery);
