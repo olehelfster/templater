@@ -1,28 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>Title</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
 </head>
 <body>
+<panel heading="Outer Panel">
+    <div>Some outer content</div>
+    <panel heading="Inner Panel">
+        <div>Some Inner content</div>
+    </panel>
+</panel>
 
-<bootstrap_button class="btn btn-default some-class" type="submit" >Some Text</bootstrap_button>
 
 <script src="templater.js"></script>
 <script>
-  Templater.addTag(
-
-    'bootstrap_button',
-
-    '<button class="{{class}}" type="{{type}}">' +
-
-    '{{html}}' +
-
-    '</button>'
-
-  );
-
-  Templater.run();
+  $(document).templater({
+    tags: {
+      'panel': '<div class="panel"><div class="panel-heading">{{heading}}</div><div class="panel-body">{{html}}</div></div>'
+    }
+  });
 </script>
 </body>
 </html>
