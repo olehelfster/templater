@@ -4,12 +4,30 @@
 
   class Plugin {
     constructor(element, options) {
+
       this.element = $(element);
       this.config = $.extend({}, $.fn.templater.defaults, options);
 
-      this.init();
+
+      for(let key in this.config.tags){
+        console.log(this.element.find(key));
+        console.log(key);
+        if (this.element.find(key)) {
+          this.run(this.config.tags);
+        }
+      }
+
+      // console.log(this.config.tags);
+      // this.run(this.config.tags);
+      // console.log(this.config.tags);
+      // this.run(this.config.tags);
+      // console.log(this.config.tags);
+      // this.run(this.config.tags);
+      // console.log(this.config.tags);
+
     }
-    render(template, element){
+
+    render(template, element) {
       const regexp = /{{(.*?)}}/g;
       const $element = $(element);
 
@@ -21,17 +39,13 @@
       });
     }
 
-    init() {
+    run(obj) {
+      for (let tag in obj) {
+        let element = $(this.element).find(tag)[0];
+        let template = this.render(obj[tag], element);
 
-      for (let tag in this.config.tags) {
+        $(element).replaceWith(template);
 
-
-
-        $(this.element.find(tag)).each((i, element) => {
-          const template = this.render(this.config.tags[tag], element);
-
-         this.element.find(tag).replaceWith(template);
-        });
       }
     }
   }
