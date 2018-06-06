@@ -1,20 +1,27 @@
-(function ($) {
-  $.fn.templater = function (options) {
-    const tags = options.tags;
+;(function ($) {
 
-    if (!tags) {
-      return;
-    }
+  const pluginName = "templater",
+    defaults = {
+      tags: {}
+    };
 
+  function Plugin(element, options) {
+    this.element = $(element);
+    this.config = $.extend({}, defaults, options);
+
+    this.init();
+  }
+
+  Plugin.prototype.init = function () {
     const regexp = /{{(.*?)}}/g;
-    const $this = $(this);
 
     function _render(template, element) {
 
       const $element = $(element);
+
       function precedeTemplate(match, attr) {
         if (attr === 'html') {
-          if($element.html() === ""){
+          if ($element.html() === "") {
             return $element.html('Some Text')[0].innerHTML
           }
           return $element.html();
@@ -26,18 +33,25 @@
       return template.replace(regexp, precedeTemplate);
     }
 
-    for (let tag in tags) {
-      const elements = $this.find(tag);
-      
-      $(elements).each((i, element) => {
-        element.outerHTML = _render(tags[tag], element);
+    for (let tag in this.config.tags) {
+      $(this.element.find(tag)).each((i, element) => {
+
+        const template = _render(this.config.tags[tag], element);
+
+        this.element.find(tag).replaceWith(template);
       });
-
     }
-    return $this.each( () => {
-
-    });
   };
+
+  $.fn.templater = function (options) {
+    return this.each(function () {
+      if (!$.data(this, "plugin_" + pluginName)) {
+        $.data(this, "plugin_" + pluginName,
+          new Plugin(this, options));
+      }
+    });
+  }
+
 })(jQuery);
 
 
