@@ -13,6 +13,9 @@
     <div>Some outer content</div>
     <panel heading="Inner Panel">
         <div>Some Inner content</div>
+        <panel heading="Inner Panel2">
+            <div>Some Inner content2</div>
+        </panel>
     </panel>
 </panel>
 
@@ -21,7 +24,11 @@
 <script>
   $(document).templater({
     tags: {
-      'panel': '<div class="panel"><div class="panel-heading">{{heading}}</div><div class="panel-body">{{html}}</div></div>'
+      'bootstrap_button': '<button class="{{class}}">{{html}}</button>',
+      'bootstrap_link': '<a class="{{class}}" href="#">{{html}}</a>',
+      'panel': '<div class="panel"><bootstrap_button class="btn">Bootstrap button</bootstrap_button><div class="panel-heading">{{heading}}</div><bootstrap_link class="link">Link</bootstrap_link><div class="panel-body">{{html}}</div></div>',
+      
+      
     }
   });
 </script>

@@ -1,55 +1,62 @@
 ;(function ($) {
 
-  const pluginName = "templater",
-    defaults = {
-      tags: {}
-    };
+  const pluginName = "templater";
 
-  function Plugin(element, options) {
-    this.element = $(element);
-    this.config = $.extend({}, defaults, options);
+  class Plugin {
+    constructor(element, options) {
 
-    this.init();
-  }
+      this.element = $(element);
+      this.config = $.extend({}, $.fn.templater.defaults, options);
 
-  Plugin.prototype.init = function () {
-    const regexp = /{{(.*?)}}/g;
-
-    function _render(template, element) {
-
-      const $element = $(element);
-
-      function precedeTemplate(match, attr) {
-        if (attr === 'html') {
-          if ($element.html() === "") {
-            return $element.html('Some Text')[0].innerHTML
-          }
-          return $element.html();
-        } else {
-          return $element.attr(attr);
-        }
+      const tagsName = [];
+      const tags = this.config.tags;
+      
+      for(let tag in tags){
+        tagsName.push(tag);
       }
 
-      return template.replace(regexp, precedeTemplate);
-    }
+      this.run(tags);
 
-    for (let tag in this.config.tags) {
-      $(this.element.find(tag)).each((i, element) => {
-
-        const template = _render(this.config.tags[tag], element);
-
-        this.element.find(tag).replaceWith(template);
+      $(tagsName).each((i, tag) => {
+        if(this.element.find(tag)){
+          this.run(tags);
+        }
       });
     }
-  };
+
+    render(template, element) {
+      const regexp = /{{(.*?)}}/g;
+      const $element = $(element);
+
+      return template.replace(regexp, function (match, attr) {
+        if (attr === "html") {
+          return $element.html();
+        }
+        return $element.attr(attr);
+      });
+    }
+
+    run(obj) {
+      for (let tag in obj) {
+        let element = this.element.find(tag);
+        let template = this.render(obj[tag], element);
+        $(element).replaceWith(template);
+      }
+    }
+  }
+
 
   $.fn.templater = function (options) {
     return this.each(function () {
-      if (!$.data(this, "plugin_" + pluginName)) {
-        $.data(this, "plugin_" + pluginName,
+      if (!$.data(this, `plugin_${pluginName}`)) {
+        $.data(this, `plugin_${pluginName}`,
           new Plugin(this, options));
       }
     });
+  };
+
+  $.fn.templater.defaults = {
+    tags: {}
   }
 
 })(jQuery);
