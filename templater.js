@@ -38,8 +38,8 @@
 
     run(obj) {
       for (let tag in obj) {
-        let element = this.element.find(tag);
-        let template = this.render(obj[tag], element);
+        const element = this.element.find(tag);
+        const template = this.render(obj[tag], element);
         $(element).replaceWith(template);
       }
     }

@@ -24,7 +24,6 @@ const Templater = (function () {
         const elements = Array.from(document.getElementsByTagName(tag));
         elements.forEach(element => {
           element.outerHTML = _render(tags[tag], element);
-
         })
       }
     }
