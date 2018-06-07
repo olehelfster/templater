@@ -8,23 +8,20 @@
       this.element = $(element);
       this.config = $.extend({}, $.fn.templater.defaults, options);
 
-
-      for(let key in this.config.tags){
-        console.log(this.element.find(key));
-        console.log(key);
-        if (this.element.find(key)) {
-          this.run(this.config.tags);
-        }
+      const tagsName = [];
+      const tags = this.config.tags;
+      
+      for(let tag in tags){
+        tagsName.push(tag);
       }
 
-      // console.log(this.config.tags);
-      // this.run(this.config.tags);
-      // console.log(this.config.tags);
-      // this.run(this.config.tags);
-      // console.log(this.config.tags);
-      // this.run(this.config.tags);
-      // console.log(this.config.tags);
+      this.run(tags);
 
+      $(tagsName).each((i, tag) => {
+        if(this.element.find(tag)){
+          this.run(tags);
+        }
+      });
     }
 
     render(template, element) {
@@ -41,11 +38,9 @@
 
     run(obj) {
       for (let tag in obj) {
-        let element = $(this.element).find(tag)[0];
+        let element = this.element.find(tag);
         let template = this.render(obj[tag], element);
-
         $(element).replaceWith(template);
-
       }
     }
   }
